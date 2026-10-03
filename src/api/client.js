@@ -11,18 +11,27 @@ function readCookie(name) {
   return match ? decodeURIComponent(match[2]) : null;
 }
 
-let csrfPrimed = false;
+let csrfToken = null;
 
 async function ensureCsrf() {
-  if (csrfPrimed && readCookie(CSRF_COOKIE)) return;
+  if (csrfToken) return;
 
-  await fetch(`${API_BASE_URL}/api/csrf`, {
+  const res = await fetch(`${API_BASE_URL}/api/csrf`, {
     credentials: 'include',
   });
 
-  csrfPrimed = true;
-}
+  if (!res.ok) {
+    throw new Error('Failed to initialize CSRF protection.');
+  }
 
+  const data = await res.json();
+
+  csrfToken = data.csrfToken || null;
+
+  if (!csrfToken) {
+    throw new Error('CSRF token was not returned by the server.');
+  }
+}
 async function request(
   path,
   { method = 'GET', body, isFormData = false } = {}
@@ -38,13 +47,10 @@ async function request(
   const safe = ['GET', 'HEAD'];
 
   if (!safe.includes(method)) {
-    const token = readCookie(CSRF_COOKIE);
-
-    if (token) {
-      headers['X-CSRF-Token'] = token;
-    }
+  if (csrfToken) {
+    headers['X-CSRF-Token'] = csrfToken;
   }
-
+}
   const res = await fetch(`${API_BASE_URL}/api${path}`, {
     method,
     headers,
