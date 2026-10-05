@@ -30,6 +30,7 @@ export default function Navbar({ name }) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
+          boxSizing: 'border-box',
         }}
         aria-label="Primary"
       >
@@ -43,6 +44,9 @@ export default function Navbar({ name }) {
             fontSize: '1.2rem',
             textDecoration: 'none',
             letterSpacing: '-0.02em',
+            marginRight: 40,
+            whiteSpace: 'nowrap',
+            flexShrink: 0,
           }}
         >
           {name || 'Portfolio'}
@@ -54,6 +58,8 @@ export default function Navbar({ name }) {
             display: 'flex',
             alignItems: 'center',
             gap: 32,
+            marginLeft: 'auto',
+            flexShrink: 0,
           }}
         >
           {links.map((l) => (
@@ -79,3 +85,4 @@ export default function Navbar({ name }) {
     </header>
   );
 }
+
