@@ -20,6 +20,7 @@ export default function Navbar({ name }) {
         boxShadow: '0 4px 16px rgba(24, 24, 27, 0.06)',
         backdropFilter: 'blur(10px)',
         WebkitBackdropFilter: 'blur(10px)',
+        boxSizing: 'border-box',
       }}
     >
       <nav
@@ -30,7 +31,9 @@ export default function Navbar({ name }) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
+          gap: 24,
           boxSizing: 'border-box',
+          overflow: 'hidden',
         }}
         aria-label="Primary"
       >
@@ -44,9 +47,11 @@ export default function Navbar({ name }) {
             fontSize: '1.2rem',
             textDecoration: 'none',
             letterSpacing: '-0.02em',
-            marginRight: 40,
             whiteSpace: 'nowrap',
-            flexShrink: 0,
+            flexShrink: 1,
+            minWidth: 0,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
           }}
         >
           {name || 'Portfolio'}
@@ -57,9 +62,9 @@ export default function Navbar({ name }) {
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: 32,
-            marginLeft: 'auto',
+            gap: 28,
             flexShrink: 0,
+            whiteSpace: 'nowrap',
           }}
         >
           {links.map((l) => (
@@ -75,6 +80,7 @@ export default function Navbar({ name }) {
                 color: isActive ? 'var(--primary)' : 'var(--text)',
                 padding: '8px 0',
                 transition: 'color 180ms ease',
+                whiteSpace: 'nowrap',
               })}
             >
               {l.label}
