@@ -1,15 +1,6 @@
 const API_BASE_URL =
-  import.meta.env.VITE_API_URL || 'http://localhost:4000';
-
-const CSRF_COOKIE = 'csrf_token';
-
-function readCookie(name) {
-  const match = document.cookie.match(
-    new RegExp('(^| )' + name + '=([^;]+)')
-  );
-
-  return match ? decodeURIComponent(match[2]) : null;
-}
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.PROD ? '' : 'http://localhost:4000');
 
 let csrfToken = null;
 
@@ -32,6 +23,7 @@ async function ensureCsrf() {
     throw new Error('CSRF token was not returned by the server.');
   }
 }
+
 async function request(
   path,
   { method = 'GET', body, isFormData = false } = {}
@@ -46,11 +38,10 @@ async function request(
 
   const safe = ['GET', 'HEAD'];
 
-  if (!safe.includes(method)) {
-  if (csrfToken) {
+  if (!safe.includes(method) && csrfToken) {
     headers['X-CSRF-Token'] = csrfToken;
   }
-}
+
   const res = await fetch(`${API_BASE_URL}/api${path}`, {
     method,
     headers,
@@ -126,3 +117,4 @@ export function uploadUrl(relativePath) {
 
   return `${API_BASE_URL}/uploads/${relativePath}`;
 }
+
