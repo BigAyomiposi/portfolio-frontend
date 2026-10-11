@@ -115,6 +115,18 @@ export const api = {
 export function uploadUrl(relativePath) {
   if (!relativePath) return null;
 
-  return `${API_BASE_URL}/uploads/${relativePath}`;
+  // Supabase public URLs should be used directly.
+  if (/^https?:\/\//i.test(relativePath)) {
+    return relativePath;
+  }
+
+  // Preserve compatibility with existing locally stored images.
+  const cleanPath = relativePath.replace(/^\/+/, '');
+
+  if (cleanPath.startsWith('uploads/')) {
+    return `${API_BASE_URL}/${cleanPath}`;
+  }
+
+  return `${API_BASE_URL}/uploads/${cleanPath}`;
 }
 
